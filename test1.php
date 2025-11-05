@@ -17,7 +17,7 @@ $sorted = '';
 $error = '';
 $input = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'sort') {
     $input = trim(isset($_POST['to_sort']) ? $_POST['to_sort'] : '');
 
     if ($input === '') {
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($items)) {
             $error = 'No valid items found. Check your commas and spaces.';
         } else {
-            sort($items);
+            sort($items, SORT_STRING | SORT_FLAG_CASE);
             $sorted = implode(', ', $items);
         }
     }
@@ -38,6 +38,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <title>Sort List</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 40px;
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 500px;
+            height: 120px;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <h1>Sort List</h1>
