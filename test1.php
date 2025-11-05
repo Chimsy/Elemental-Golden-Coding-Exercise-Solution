@@ -12,22 +12,81 @@
  * The end result should look like the following:
  * apples, cars, tables and chairs, tea and coffee, zebras
  */
-?>
-<?php
 
+$sorted = '';
+$error = '';
+$input = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'sort') {
+    $input = trim(isset($_POST['to_sort']) ? $_POST['to_sort'] : '');
+
+    if ($input === '') {
+        $error = 'Please enter at least one word or phrase.';
+    } else {
+        $items = array_filter(array_map('trim', explode(',', $input)));
+
+        if (empty($items)) {
+            $error = 'No valid items found. Check your commas and spaces.';
+        } else {
+            sort($items, SORT_STRING | SORT_FLAG_CASE);
+            $sorted = implode(', ', $items);
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Test1</title>
+    <title>Sort List</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 40px;
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 500px;
+            height: 120px;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-	<h1>Sort List</h1>
-	<form method="post">
-		<input type="hidden" name="action" value="sort" />
-		<label for="to_sort">Please enter the words/phrases to be sorted separated by commas:</label><br/>
-		<textarea name="to_sort" style="width: 400px; height: 150px;"></textarea><br/>
-		<input type="submit" value="Sort" />
-	</form>
+<h1>Sort List</h1>
+
+<?php if ($error): ?>
+    <p class="error"><?= htmlspecialchars($error) ?></p>
+<?php endif; ?>
+
+<form method="post">
+    <input type="hidden" name="action" value="sort"/>
+    <label for="to_sort">Please enter the words/phrases to be sorted separated by commas:</label><br/>
+
+    <textarea name="to_sort" id="to_sort" style="width: 400px; height: 150px;"><?= htmlspecialchars($input) ?></textarea><br/>
+
+    <input type="submit" value="Sort"/>
+</form>
+
+<?php if ($sorted): ?>
+    <div class="result">
+        <strong><?= htmlspecialchars($sorted) ?></strong>
+    </div>
+<?php endif; ?>
+
 </body>
 </html>
