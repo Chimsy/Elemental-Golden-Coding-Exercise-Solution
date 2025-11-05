@@ -1,4 +1,4 @@
-let customers = [
+var customers = [
     {
         name: "Rocky Green",
         birthdate: "1988-10-01"
@@ -43,4 +43,4 @@ let customers = [
         name: "Oscar Orange",
         birthdate: "1990-01-22"
     },
-];
+]
